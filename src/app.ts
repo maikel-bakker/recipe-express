@@ -4,17 +4,20 @@ import * as mongoose from "mongoose";
 import * as cors from "cors";
 
 import { RecipeRoutes } from "./routes/recipeRoutes";
+import { IngredientRoutes } from "./routes/ingredientRoutes";
 
 class App {
 
     app: express.Application;
     recipeRoutes: RecipeRoutes = new RecipeRoutes();
+    ingredientRoutes: IngredientRoutes = new IngredientRoutes();
     mongoDbUrl: string = 'mongodb://maikel:sundin17@ds163417.mlab.com:63417/recipe-app';
 
     constructor() {
         this.app = express();
         this.config();
         this.recipeRoutes.routes(this.app);
+        this.ingredientRoutes.routes(this.app);
         this.mongoSetup();
     }
 
