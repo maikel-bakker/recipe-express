@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { IngredientSchema } from './ingredientModel';
 
 const Schema = mongoose.Schema;
@@ -27,4 +27,6 @@ export const RecipeSchema = new Schema({
         required: 'Enter a difficulty'
     },
     ingredients: [IngredientSchema]
-})
+});
+
+export const RecipeModel = mongoose.model('Recipe', RecipeSchema);

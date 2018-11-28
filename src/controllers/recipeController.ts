@@ -1,13 +1,12 @@
-import * as mongoose from 'mongoose';
-import { RecipeSchema } from '../models/recipeModel';
+import { RecipeModel } from '../models/recipeModel';
 import { Request, Response } from 'express';
 
-const Recipe = mongoose.model('Recipe', RecipeSchema);
+
 
 export class RecipeController {
 
     addRecipe(req: Request, res: Response): void {
-        let newRecipe = new Recipe(req.body);
+        let newRecipe = new RecipeModel(req.body);
 
         newRecipe.save((err, recipe): void => {
             if (err) {
@@ -22,7 +21,7 @@ export class RecipeController {
     }
 
     getRecipes(req: Request, res: Response): void {
-        Recipe.find({}, (err, recipe) => {
+        RecipeModel.find({}, (err, recipe) => {
             if (err) {
                 res.status(500).send(err);
             } else {
