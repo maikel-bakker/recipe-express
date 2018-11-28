@@ -24,11 +24,10 @@ export class RecipeController {
     getRecipes(req: Request, res: Response): void {
         Recipe.find({}, (err, recipe) => {
             if (err) {
-                res.send(err);
+                res.status(500).send(err);
             } else {
-                res.json(recipe);
+                res.status(200).json(recipe);
             }
-            
         });
     }
 }
