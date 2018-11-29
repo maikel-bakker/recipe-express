@@ -26,5 +26,12 @@ export const RecipeSchema = new Schema({
         max: 5,
         required: 'Enter a difficulty'
     },
-    ingredients: [IngredientSchema]
-})
+    ingredients: [{
+        type: Schema.Types.ObjectId, ref: 'Ingredient'
+    }]
+},
+{
+    timestamps: true
+});
+
+export const RecipeModel = mongoose.model('Recipe', RecipeSchema);

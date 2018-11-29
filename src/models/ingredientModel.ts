@@ -11,4 +11,6 @@ export const IngredientSchema = new Schema({
         type: String,
         required: 'Supply an ingredient type'
     }
-})
+});
+
+export const IngredientModel = mongoose.model('Ingredient', IngredientSchema);
