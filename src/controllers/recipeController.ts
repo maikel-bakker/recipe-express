@@ -1,8 +1,6 @@
 import { RecipeModel } from '../models/recipeModel';
 import { Request, Response } from 'express';
 
-
-
 export class RecipeController {
 
     addRecipe(req: Request, res: Response): void {
@@ -21,7 +19,9 @@ export class RecipeController {
     }
 
     getRecipes(req: Request, res: Response): void {
-        RecipeModel.find({}, (err, recipe) => {
+        RecipeModel.find()
+        .populate('ingredients')
+        .exec((err, recipe) => {
             if (err) {
                 res.status(500).send(err);
             } else {
