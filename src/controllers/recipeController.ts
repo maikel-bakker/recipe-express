@@ -13,14 +13,27 @@ export class RecipeController {
                 console.log(err);
             } else {
                 console.log('recipe saved');
-                res.json(recipe);
+                recipe.populate('ingredientAmounts.ingredient').execPopulate();
+                res.status(200).json(recipe);
+            }
+        });
+    }
+
+    getSingleRecipe(req: Request, res: Response) : void {;
+        RecipeModel.findById(req.params.recipeId)
+        .populate('ingredientAmounts.ingredient')
+        .exec((err, recipe) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.status(200).json(recipe);
             }
         });
     }
 
     getRecipes(req: Request, res: Response): void {
         RecipeModel.find()
-        .populate('ingredients')
+        .populate('ingredientAmounts.ingredient')
         .exec((err, recipe) => {
             if (err) {
                 res.status(500).send(err);
