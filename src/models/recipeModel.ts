@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IngredientSchema } from './ingredientModel';
+import { IngredientAmountSchema } from './ingredientAmountModel';
 
 const Schema = mongoose.Schema;
 
@@ -20,14 +20,9 @@ export const RecipeSchema = new Schema({
         type: Number,
         required: 'Enter a cooking time'
     },
-    difficulty: {
-        type: Number,
-        min: 1,
-        max: 5,
-        required: 'Enter a difficulty'
-    },
-    ingredients: [{
-        type: Schema.Types.ObjectId, ref: 'Ingredient'
+    ingredientAmounts: [IngredientAmountSchema],
+    steps: [{
+        type: String
     }]
 },
 {
