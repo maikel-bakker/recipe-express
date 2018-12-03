@@ -5,6 +5,7 @@ import * as cors from "cors";
 
 import { RecipeRoutes } from "./routes/recipeRoutes";
 import { IngredientRoutes } from "./routes/ingredientRoutes";
+import { ScheduleRoutes } from "./routes/scheduleRoutes";
 
 import { ApolloServer } from "apollo-server-express";
 import { schema } from "./schema";
@@ -23,6 +24,7 @@ class App {
     });
     recipeRoutes: RecipeRoutes = new RecipeRoutes();
     ingredientRoutes: IngredientRoutes = new IngredientRoutes();
+    scheduleRoutes: ScheduleRoutes = new ScheduleRoutes();
     mongoDbUrl: string = 'mongodb://maikel:sundin17@ds163417.mlab.com:63417/recipe-app';
 
     constructor() {
@@ -32,6 +34,7 @@ class App {
         this.config();
         this.recipeRoutes.routes(this.app);
         this.ingredientRoutes.routes(this.app);
+        this.scheduleRoutes.routes(this.app);
         this.mongoSetup();
     }
 
