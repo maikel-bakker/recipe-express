@@ -9,8 +9,12 @@ export const IngredientAmountSchema = new Schema({
         required: 'Enter an ingredient ID'
     },
     amount: {
-        type: String,
+        type: Number,
         required: 'Supply an ingredient amount'
+    },
+    amountUnit: {
+        type: String,
+        required: 'Supply an ingredient unit'
     }
 });
 

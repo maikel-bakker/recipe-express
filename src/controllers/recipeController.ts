@@ -34,11 +34,11 @@ export class RecipeController {
     getRecipes(req: Request, res: Response): void {
         RecipeModel.find()
         .populate('ingredientAmounts.ingredient')
-        .exec((err, recipe) => {
+        .exec((err, recipes) => {
             if (err) {
                 res.status(500).send(err);
             } else {
-                res.status(200).json(recipe);
+                res.status(200).json(recipes);
             }
         });
     }
