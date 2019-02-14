@@ -1,9 +1,8 @@
-import { IngredientModel } from '../models/ingredientModel';
-import { IngredientAmountSchema } from '../models/ingredientAmountModel';
 import { Request, Response } from 'express';
+import { IngredientModel } from '../models/ingredientModel';
 import { RecipeModel } from '../models/recipeModel';
 import { ScheduleModel } from '../models/scheduleModel';
-import { log } from 'util';
+import { IngredientListModel } from '../models/ingredientListModel';
 
 export class IngredientController {
     getIngredients(req: Request, res: Response): void {
@@ -29,87 +28,111 @@ export class IngredientController {
     }
 
     getIngredientsByWeekNumber(req: Request, res: Response): void {
-        let recipeIds = [];
-        let self = new IngredientController();
 
-        ScheduleModel
-        .findOne({ weekNumber: req.params.weekNumber })
-        .exec((err, schedule) => {
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                if (schedule) {
-                    schedule.weekDays.forEach(weekDay => {
-                        if (weekDay.recipe) {
-                            recipeIds.push(weekDay.recipe);
-                        }
-                    });
+        IngredientListModel
+            .findOne({ weekNumber: req.params.weekNumber })
+            .select('ingredientAmounts')
+            .populate('ingredientAmounts.ingredient')
+            .exec((err, ingredientList) => {
+                if (err) {
+                    res.status(500).send(err);
+                } 
 
-                    RecipeModel
-                    .find()
-                    .where('_id')
-                    .in(recipeIds)
-                    .select('ingredientAmounts')
-                    .populate('ingredientAmounts.ingredient')
-                    .exec((err, ingredientAmounts) => {
-                        if (err) {
-                            res.status(500).send(err);
-                        } else {
-                            const ingredients = self._mergeIngredientAmounts(ingredientAmounts);
-                            console.log(ingredients);
-                            
-                            res.status(200).json(ingredients);
-                        }
-                    });
-                    
+                if (ingredientList) {
+                    res.status(200).json(ingredientList);
                 } else {
-                    res.status(404).json({ statusText: `schedule ${req.params.weekNumber} not found`})
+                    res.status(404).json({ message: 'Ingredient List not found' })
                 }
-            }
-        })
-    }
-
-    getIngredientsByRecipe(req: Request, res: Response): void {
-        let recipeIds = req.body.recipeIds;
-
-        RecipeModel.find()
-        .where('_id')
-        .in(recipeIds)
-        .select('ingredientAmounts')
-        .populate('ingredientAmounts.ingredient')
-        .exec((err, recipes) => {
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                res.status(200).json(recipes);
-            }
         });
     }
 
+    getIngredientsByRecipe(req: Request, res: Response): void {
+        const recipeIds = req.body.recipeIds;
+
+        RecipeModel.find()
+            .where('_id')
+            .in(recipeIds)
+            .populate('ingredientAmounts')
+            .exec((err, recipes) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else {
+                    res.status(200).json(recipes);
+                }
+            });
+    }
+
+    public async addIngredientList(schedule) {
+        const ingredientAmounts = await this._findAndMergeIngredientAmounts(schedule);
+        const ingredientList = {
+            weekNumber: schedule.weekNumber,
+            ingredientAmounts: ingredientAmounts
+        }
+
+        IngredientListModel.findOneAndUpdate({ weekNumber: schedule.weekNumber }, 
+            ingredientList,
+            { upsert: true }, 
+            (err, ingredientList) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(ingredientList);
+                }
+            });
+    }
+
+    private _findAndMergeIngredientAmounts(schedule) {
+        const self = this;
+
+        return new Promise((resolve, reject) => {
+            RecipeModel
+                .find()
+                .where('_id')
+                .in(self._getRecipeIds(schedule))
+                .select('ingredientAmounts')
+                .populate('ingredientAmounts.ingredient')
+                .exec((err, ingredientAmounts) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(self._mergeIngredientAmounts(ingredientAmounts));
+                    }
+                });
+        })
+    }
+
     private _mergeIngredientAmounts(ingredientAmountsRaw) {
-        let ingredients : { name: String, amount: String, amountUnit: string }[] = [];
+        let ingredients : { ingredient, amount: String, amountUnit: string }[] = [];
 
         ingredientAmountsRaw.forEach(ingredientAmountRaw => {
+
             ingredientAmountRaw.ingredientAmounts.forEach(ingredientAmount => {
+                let ingredient = ingredientAmount.ingredient;
                 let name = ingredientAmount.ingredient.name;
                 let amount = ingredientAmount.amount;
                 let amountUnit = ingredientAmount.amountUnit;
-
-                console.log(ingredients.filter(ingredient => ingredient.name === name));
-                
     
-                if (!ingredients.filter(ingredient => ingredient.name === name).length) {
-                    ingredients = [...ingredients, { name: name, amount: amount, amountUnit: amountUnit }];
+                if (!ingredients.filter(ingredient => ingredient.ingredient.name === name).length) {
+                    ingredients = [...ingredients, { ingredient: ingredient, amount: amount, amountUnit: amountUnit }];
                 } else {
                     ingredients.map(ingredient => {
-                        if (ingredient.name === name) {
+                        if (ingredient.ingredient.name === name) {
                             ingredient.amount = ingredient.amount += amount;
                         }
                     })
                 }
-            })
-        })
+            });
+
+        });
 
         return ingredients;
+    }
+
+    private _getRecipeIds(schedule: any): string[] {
+        return schedule.weekDays.map(weekDay => {
+            if (weekDay.recipe) {
+                return weekDay.recipe;
+            }
+        });
     }
 }

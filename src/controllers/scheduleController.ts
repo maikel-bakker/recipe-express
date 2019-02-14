@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import { ScheduleModel } from '../models/scheduleModel';
-import { log } from 'util';
+import { IngredientController } from './ingredientController';
+import { request } from 'http';
 
 export class ScheduleController {
+    static ingredientController : IngredientController = new IngredientController();
+
     getSchedules(req: Request, res: Response): void {
         ScheduleModel
         .find()
@@ -34,24 +37,20 @@ export class ScheduleController {
     }
     
     addSchedule(req: Request, res: Response): void {
-        // let newSchedule = new ScheduleModel(req.body);
-        let newSchedule = {
+        const newSchedule = {
             weekNumber: req.body.weekNumber,
             weekDays: req.body.weekDays
         }
-        
 
         ScheduleModel.findOneAndUpdate({ weekNumber: req.body.weekNumber }, 
             newSchedule, 
             { upsert: true }, 
             (err, schedule) => {
                 if (err) {
-                    console.log(err);
-                    
                     res.status(500).send(err);
                 } else {
-                    // schedule.populate('weekDays.recipe').execPopulate();
                     res.status(200).json(schedule);
+                    ScheduleController.ingredientController.addIngredientList(schedule);
                 }
             });
     }
