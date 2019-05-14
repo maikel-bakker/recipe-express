@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc",
-        "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/server.ts",
-        "start": "nodemon ./dist/server.js",
+        "build": "node ./node_modules/typescript/bin/tsc",
+        "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/server.ts",
+        "start": "node ./dist/server.js",
         "prod": "npm run build && npm run start"
     },
     "author": "",
@@ -26,6 +26,7 @@
         "ts-node": "^7.0.1"
     },
     "devDependencies": {
+        "@types/graphql": "^14.2.0",
         "typescript": "^3.1.6",
         "typescript-tools": "^0.3.1"
     }
