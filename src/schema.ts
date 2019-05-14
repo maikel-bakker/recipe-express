@@ -6,6 +6,7 @@ import { RecipeResolver } from "./resolvers/recipeResolver";
 
 import { IngredientType } from "./types/ingredientType";
 import { IngredientResolver } from "./resolvers/ingredientResolver";
+import { IngredientAmountType } from "./types/ingredientAmountType";
 
 const Query = gql`
     type Query {
@@ -29,6 +30,6 @@ const Mutation = gql`
 `
 
 export const schema = makeExecutableSchema({
-    typeDefs: [ Query, Mutation, RecipeType, IngredientType ],
+    typeDefs: [ Query, Mutation, RecipeType, IngredientType, IngredientAmountType ],
     resolvers: merge(RecipeResolver, IngredientResolver),
 });
