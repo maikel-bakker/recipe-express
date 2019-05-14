@@ -3,7 +3,9 @@ import { IngredientModel } from "../models/ingredientModel";
 
 export const RecipeResolver = {
     Query: {
-        recipes: () => RecipeModel.find({}).populate('ingredients'),
+        recipes: () => RecipeModel.find()
+                        .sort({ 'updatedAt': 1 })
+                        .populate('ingredientAmounts.ingredient'),
         recipe: (root, { _id }) => RecipeModel.findById(_id)
     },
     Mutation: {

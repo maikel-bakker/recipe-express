@@ -5,11 +5,12 @@ export const RecipeType = gql`
         _id: String!,
         title: String!,
         description: String!,
-        serves: Int!,
-        cookTime: Int!,
-        difficulty: Int!,
-        createdAt: String,
-        updatedAt: String,
-        ingredients: [Ingredient]
+        serves: Float!,
+        cookTime: Float,
+        difficulty: Float,
+        ingredientAmounts: [IngredientAmount],
+        steps: [String],
+        createdAt: String!,
+        updatedAt: String!,
     }
 `;
