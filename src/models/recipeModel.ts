@@ -20,6 +20,9 @@ export const RecipeSchema = new Schema({
         type: Number,
         required: 'Enter a cooking time'
     },
+    imageUrl: {
+        type: String
+    },
     ingredientAmounts: [IngredientAmountSchema],
     steps: [{
         type: String
