@@ -6,4 +6,9 @@ export const IngredientType = gql`
         name: String!,
         type: String!
     }
+
+    input IngredientInput {
+        name: String!,
+        type: String!
+    }
 `;

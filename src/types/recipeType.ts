@@ -6,11 +6,21 @@ export const RecipeType = gql`
         title: String!,
         description: String!,
         serves: Float!,
-        cookTime: Float,
-        difficulty: Float,
+        cookTime: Float!,
+        imageUrl: String,
         ingredientAmounts: [IngredientAmount],
         steps: [String],
         createdAt: String!,
         updatedAt: String!,
+    }
+
+    input RecipeInput {
+        title: String!,
+        description: String!,
+        serves: Float!,
+        cookTime: Float!,
+        imageUrl: String,
+        ingredientAmounts: [IngredientAmountInput],
+        steps: [String]
     }
 `;

@@ -7,4 +7,10 @@ export const IngredientAmountType = gql`
         amount: Float!,
         amountUnit: String!
     }
+
+    input IngredientAmountInput {
+        ingredient: IngredientInput!,
+        amount: Float!,
+        amountUnit: String!
+    }
 `;
