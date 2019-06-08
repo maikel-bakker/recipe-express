@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { IngredientModel } from '../models/ingredientModel';
 import { RecipeModel } from '../models/recipeModel';
-import { ScheduleModel } from '../models/scheduleModel';
 import { IngredientListModel } from '../models/ingredientListModel';
 
 export class IngredientController {

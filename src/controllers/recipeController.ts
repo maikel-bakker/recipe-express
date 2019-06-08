@@ -19,7 +19,7 @@ export class RecipeController {
         });
     }
 
-    getSingleRecipe(req: Request, res: Response) : void {;
+    getSingleRecipe(req: Request, res: Response) : void {
         RecipeModel.findById(req.params.recipeId)
         .populate('ingredientAmounts.ingredient')
         .exec((err, recipe) => {
@@ -33,6 +33,7 @@ export class RecipeController {
 
     getRecipes(req: Request, res: Response): void {
         RecipeModel.find()
+        .sort({ 'updatedAt': 1 })
         .populate('ingredientAmounts.ingredient')
         .exec((err, recipes) => {
             if (err) {
