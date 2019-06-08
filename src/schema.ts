@@ -18,7 +18,7 @@ const Query = gql`
 
 const Mutation = gql`
     type Mutation {
-        addRecipe(input: RecipeInput) : Recipe
+        addRecipe(recipe: RecipeInput) : Recipe
     }
 `
 
